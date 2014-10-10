@@ -1,0 +1,8 @@
+database        /opt/rtsystem/sismo/db/una
+
+#net_regex       OV|II|CU|NU|PR
+net_regex       
+sta_regex       
+
+json            /opt/rtsystem/webserver/webcache/stations.json
+tempjson        /opt/rtsystem/webserver/webcache/stations_temp.json
