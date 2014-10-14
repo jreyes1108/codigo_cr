@@ -68,16 +68,10 @@ def get_mags(db, evid, orid):
 
     if temp.record_count < 1:
         return -1, '-', {}
-    elif temp.record_count is 1:
-
-        temp.record = 0
-        [magid, magnitude, magtype, auth, sdobs, uncertainty ] = temp.getv('magid',
-        'magnitude','magtype','auth','sdobs','uncertainty')
-        allmags[0] = {'magnitude':magnitude, 'magtype':magtype, 'auth':auth,
-            'magid':magid, 'sdobs':sdobs, 'uncertainty':uncertainty }
 
     else:
         temp.sort('lddate')
+        #temp.sort('uncertainty',reverse=True)
         for record in temp.iter_record():
             [magid, magnitude, magtype, auth, sdobs, uncertainty ] = record.getv('magid',
             'magnitude','magtype','auth','sdobs','uncertainty')
@@ -209,7 +203,7 @@ def buscar_eventos(database):
     db = db.lookup('', 'event', '', '') 
 
     netmag = db.lookup('', 'netmag', '', '') 
-    netmag = join_table(netmag,'origerr')
+    netmag = join_table(netmag,'origerr', outer=True)
 
     db = subset_table(db,'evid != NULL')
 
