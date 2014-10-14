@@ -54,6 +54,40 @@ if (not timeZone):
     print "Requerimos valor para [timeZone] in pf: %s" % (options.pf)
     sys.exit()
 
+def get_mags(db, evid, orid):
+    '''
+    Tomar el db object y correr subset.
+    Obtener la mejor magnitud.
+    '''
+
+    temp = db.subset('evid == %s && orid == %s' % (evid, orid) )
+    
+    allmags = {}
+
+    if options.verbose: print "%s mags for [%s,%s]" %  (temp.record_count,evid,orid)
+
+    if temp.record_count < 1:
+        return -1, '-', {}
+    elif temp.record_count is 1:
+
+        temp.record = 0
+        [magid, magnitude, magtype, auth, sdobs, uncertainty ] = temp.getv('magid',
+        'magnitude','magtype','auth','sdobs','uncertainty')
+        allmags[0] = {'magnitude':magnitude, 'magtype':magtype, 'auth':auth,
+            'magid':magid, 'sdobs':sdobs, 'uncertainty':uncertainty }
+
+    else:
+        temp.sort('lddate')
+        for record in temp.iter_record():
+            [magid, magnitude, magtype, auth, sdobs, uncertainty ] = record.getv('magid',
+            'magnitude','magtype','auth','sdobs','uncertainty')
+            allmags[record.record] = {'magnitude':magnitude, 'magtype':magtype, 'auth':auth,
+                'magid':magid, 'sdobs':sdobs, 'uncertainty':uncertainty }
+
+    temp.free()
+
+    return magnitude, magtype, allmags
+
 def subset_table(db, subset):
     '''
     Tomar el db object y correr subset.
@@ -174,6 +208,9 @@ def buscar_eventos(database):
     db = datascope.dbopen(database, 'r')
     db = db.lookup('', 'event', '', '') 
 
+    netmag = db.lookup('', 'netmag', '', '') 
+    netmag = join_table(netmag,'origerr')
+
     db = subset_table(db,'evid != NULL')
 
     if db.record_count <1:
@@ -186,9 +223,9 @@ def buscar_eventos(database):
 
     db = subset_table(db,'orid == prefor')
 
-    db = join_table(db,'netmag', outer=True, pattern1='mlid', pattern2='magid')
+    #db = join_table(db,'netmag', outer=True, pattern1='mlid', pattern2='magid')
 
-    db = join_table(db,'origerr', outer=True)
+    #db = join_table(db,'origerr', outer=True)
 
     #db = subset_table(db,'mlid == magid')
 
@@ -212,15 +249,20 @@ def buscar_eventos(database):
         if options.verbose:
             print 'Evento (%s)' % record.record
 
+        [time, lat, lon, depth, orid, evid, review, nass, ndef, 
+        auth] = record.getv('time','lat','lon','depth','orid','evid',
+        'review','nass','ndef','auth')
+
+        magnitude, magtype, allmags = get_mags(netmag,evid,orid)
+
         #db.record = record 
-        [time, lat, lon, depth, orid, evid, review, nass, ndef, magnitude, 
-        magtype, auth, sdobs ] = record.getv('time','lat','lon','depth','orid','evid',
-        'review','nass','ndef','magnitude','magtype','auth','sdobs')
+        #[time, lat, lon, depth, orid, evid, review, nass, ndef, magnitude, 
+        #magtype, auth, sdobs ] = record.getv('time','lat','lon','depth','orid','evid',
+        #'review','nass','ndef','magnitude','magtype','auth','sdobs')
 
         eventos[record.record] = { 'time':time, 'lat':lat, 'lon':lon, 'depth':depth,
-                'orid':orid, 'evid':evid, 'review':review, 'nass':nass, 'sdobs':sdobs,
+                'orid':orid, 'evid':evid, 'review':review, 'nass':nass, 'allmags':allmags,
                 'ndef':ndef, 'magnitude':magnitude, 'magtype':magtype, 'auth':auth }
-
 
         eventos[record.record]['horaLocal'] = stock.epoch2str(time,'%H:%M:%S',timeZone)
         eventos[record.record]['diaLocal'] = stock.epoch2str(time,'%Y-%m-%d',timeZone)
@@ -283,3 +325,4 @@ else:
         print "nuevo: %s %s" % (temp_json_output,md5_new)
         print "viejo: %s %s" % (json_output,md5_old)
         print "No hay cambios en el db."
+        os.remove(temp_json_output)
