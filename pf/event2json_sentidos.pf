@@ -1,0 +1,8 @@
+json_output         /opt/rtsystem/webserver/webcache/eventos_sentidos.json
+temp_json_output    /opt/rtsystem/webserver/webcache/eventos_sentidos_temp.json
+
+database           /opt/rtsystem/sentidos/db/sentido
+
+pueblos             /opt/rtsystem/webserver/pf/mundial.xy
+
+timeZone            America/Costa_Rica

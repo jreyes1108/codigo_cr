@@ -1,0 +1,78 @@
+request_queuesize 1024
+startup_failure_fatal 0
+
+########################################################################
+# custom params for orbrtd
+########################################################################
+fullday_pf     	pf/orbrtd_24hr.pf
+halfday_pf    	pf/orbrtd_12hr.pf
+sixhr_pf    	pf/orbrtd_6hr.pf
+
+orbrtd_x   &ref(orbrtd.pf,canvas_wmax)
+orbrtd_y   &ref(orbrtd.pf,canvas_hmax)
+
+caches &Arr{
+    defaults &Arr{
+        enginetype xwindow
+        update_interval_sec 0
+        autoharvest_interval_sec 60
+        command_env &Arr{
+                PATH                    &env(PATH)
+                ANTELOPE                &env(ANTELOPE)
+                PYTHONPATH              &env(PYTHONPATH)
+                ANTELOPE_TCLTK_NOAQUA   1
+                PFPATH                  &env(PFPATH)
+                ORB_MAX_DATA_BYTES      80000000
+        }
+        image_format PNG
+        window_name
+        virtual_display auto
+        virtual_screen_geometry &{orbrtd_x}x&{orbrtd_y}
+        startup_sleep_sec 1
+        xwindow_restart_sec &ref(orbrtd_24hr.pf,canvas_twin)
+    }
+    rtm &Arr{
+        command rtm
+    }
+    weborb &Arr{
+        command tkorbstat -c :demo
+    }
+    ovsorb &Arr{
+        command tkorbstat -c 10.10.128.155:6290
+    }
+    sismo_24hr_bhz &Arr{
+        command orbrtd -backup auto  -pf &{fullday_pf} -nscl_sift "(II|OV)_.*_(B|H)HZ.*" dataorb :demo
+    }
+    sismo_12hr_hhz &Arr{
+        #command orbrtd -backup auto  -pf &{halfday_pf} -nscl_sift "(II|OV)_.*_HHZ" dataorb :demo
+        command orbrtd -backup auto  -pf &{halfday_pf} -nscl_sift "(II|OV)_.*_(B|H)HZ.*" dataorb :demo
+    }
+    sismo_6hr_hnz &Arr{
+        command orbrtd -backup auto  -pf &{sixhr_pf} -nscl_sift "(II|OV)_.*_(E|H)NZ.*" dataorb :demo
+    }
+    vulca_6hr &Arr{
+        command orbrtd -backup auto  -pf vulca_orbrtd_6hr.pf dataorb :demo
+    }
+    vulca_12hr &Arr{
+        command orbrtd -backup auto  -pf vulca_orbrtd_12hr.pf dataorb :demo
+    }
+    vulca_6hr_color &Arr{
+        command orbrtd -backup auto  -pf vulca_orbrtd_6hr_color.pf dataorb :demo
+    }
+    vulca_12hr_color &Arr{
+        command orbrtd -backup auto  -pf vulca_orbrtd_12hr_color.pf dataorb :demo
+    }
+    vulca_12hr_rsam &Arr{
+        command orbrtd -backup auto  -pf vulca_orbrtd_12hr_filtered.pf dataorb :demo
+    }
+}
+
+python_startup_script &Literal{
+    import os
+    import sys
+    sys.path.append(os.environ['ANTELOPE'] + "/data/python")
+    from rtcache.rtcache import *
+}
+
+
+pf_revision_time 1398783902

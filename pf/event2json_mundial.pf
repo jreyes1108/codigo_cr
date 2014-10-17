@@ -1,0 +1,8 @@
+json_output         /opt/rtsystem/webserver/webcache/eventos_mundial.json
+temp_json_output    /opt/rtsystem/webserver/webcache/eventos_mundial_temp.json
+
+database           /opt/rtsystem/sismo/db/una
+
+pueblos             /opt/rtsystem/webserver/pf/mundial.xy
+
+timeZone            America/Costa_Rica

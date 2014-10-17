@@ -1,0 +1,42 @@
+#   orbrtd parameter file
+orbtag                  &ref(orbrtd.pf,orbtag)                  # default orbtag
+height                  &ref(orbrtd.pf,height)                  # default trace height
+scale                   &ref(orbrtd.pf,scale)                   # default scale
+trace_type              both                                   # default trace_type
+foreground              &ref(orbrtd.pf,foreground)              # default trace foreground color
+foreground_both         &ref(orbrtd.pf,foreground_both)
+background              &ref(orbrtd.pf,background)              # default trace background color
+background_nodata       &ref(orbrtd.pf,background_nodata)       # default trace background color for no data
+filter                  BW 0.08 4 8.0 4
+
+canvas_width            &ref(orbrtd.pf,canvas_width)            # total width of trace canvas
+canvas_twin             43200                                   # total time window of trace canvas
+canvas_hmax             &ref(orbrtd.pf,canvas_hmax)             # maximum height of displayed trace canvas
+canvas_wmax             &ref(orbrtd.pf,canvas_wmax)             # maximum width of displayed trace canvas
+update_interval         &ref(orbrtd.pf,update_interval)         # canvas auto time scrolling update interval
+future_buffer           &ref(orbrtd.pf,future_buffer)           # how much future time to display
+
+traces &Tbl{
+# nscl_expr     [orbtag  [height [scale    [trace_type [foreground [background [background_nodata [filter]]]]]]]]
+#   #.*BHZ.*             -        -       10000 
+    OV_VTUN_HHZ 
+    OV_VTUC_EHZ
+    OV_VTCG_HHZ
+    OV_VTCE_HHZ 
+    OV_VTCV_HHZ 
+    OV_LORE_EHZ 
+    OV_RIMA_HHZ 
+    OV_VICA_HHZ 
+    OV_HAYA_EHZ 
+    OV_OCM_HHZ 
+    OV_VPVF_HHZ 
+    OV_VPTE_HHZ
+    OV_HDC3_HHZ 
+    OV_VAVL_HHZ 
+    II_JTS_BHZ_10
+    OV_VMAR_HHZ
+    OV_VRLE_HHZ
+    OV_HZTE_HHZ
+}
+
+pf_revision_time 1398787365

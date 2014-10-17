@@ -1,0 +1,21 @@
+#   orbrtd parameter file
+
+orbtag			dataorb			# default orbtag
+height			24			# default trace height
+scale			auto,0.8		# default scale
+trace_type		trace			# default trace_type
+foreground		yellow			# default trace foreground color
+foreground_both		gray			# default trace foreground color when both traces and colors are displayed
+background		\#000080		# default trace background color
+background_nodata	black		# default trace background color for no data
+filter &Tbl{					# Filters, the first in the list is used at startup
+			none
+}
+
+canvas_width		1024			# total width of trace canvas
+canvas_hmax		3000			# maximum height of displayed trace canvas
+canvas_wmax		1280			# maximum width of displayed trace canvas
+update_interval		5.0			# canvas auto time scrolling update interval
+future_buffer		30.0			# how much future time to display
+
+pf_revision_time 1398787365

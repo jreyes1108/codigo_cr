@@ -1,0 +1,65 @@
+port	8080
+trackingdb
+
+valid_ip_addresses &Tbl{
+	0.0.0.0		0.0.0.0			# Allow any IP address to connect
+#	127.0.0.1	255.255.255.255		# e.g. Allow connections from localhost
+#	192.168.0.0	255.255.255.0		# e.g. Allow connections from an internal 192.168.0.0 C-class subnet
+#	23.31.71.0	255.255.255.0		# e.g. Allow connections from BRTT
+}
+
+reject_ip_addresses &Tbl{
+}
+
+site &Arr{
+   pythonpaths &Tbl{
+   }
+   siteconfig &Arr{
+	databases &Arr{
+      		antelope_demo		/opt/antelope/data/db/demo/demo
+	}
+   }
+   ximage &Arr{
+        orbname :proc
+        diagnostics 0
+        verbose 0
+        maxwait_sec 5
+        rtcache_targetname
+        expiration_sec 120
+        reapcheck_sec 60
+   }
+   pages &Arr{
+      index	pf:demoindex text/html	index
+      css &Arr{
+         style.css	pf:stylesheet	text/css
+      }
+      dynamic &Arr{
+          ximage rtcache:ximage
+      }
+   }
+   demoindex &Literal{
+   	<html>
+   	<head>
+   	<link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+   	</head>
+   	<body>
+   	<h1>It works!</h1>
+   	</body>
+   	</html>
+   }
+   stylesheet &Literal{
+
+	h1 {
+	  color: #000 ;
+	  font-family: arial, helvetica, geneva, sans-serif ;
+	  font-size: 1.3em ;
+	  margin: 2px ;
+	  margin-top: 20px ;
+	  font-variant: small-caps ;
+	  letter-spacing: 1px ;
+	  text-align: center;
+	}
+   }
+}
+
+pf_revision_time 1398783903

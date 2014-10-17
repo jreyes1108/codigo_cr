@@ -1,0 +1,64 @@
+
+# accept connections only from these ip addresses:
+valid_ip_addresses      &Tbl{
+127.0.0.1       255.255.255.255 # localhost
+23.31.71.129    255.255.255.240 readonly        # brtt.com network
+10.10.10.0      255.255.255.0                   #
+10.10.128.0	255.255.254.0	readonly	#
+}
+
+# reject connections from these ip addresses:
+reject_ip_addresses &Tbl{ 
+}
+
+minimum_packet_size     400    # used to size the packet index
+maximum_packet_size     8192   # 
+ringsize                2G     # total size of the file which holds the packets
+                               #      (suffix can be G, M or k)
+initial_stash_size      10M     # initial size of stash file
+
+prefix                  weborb/   # where orbserver private files are kept
+
+maximum_srcid           10000   # used to size the source index file, 
+                               #   fixed in size after creation.
+
+concurrency             5      # probably not necessary
+
+time_index_spacing      1      # an index of pktid versus time is kept 
+                               #   with this many seconds between entries
+minimum_time_index_range    3600    # minimum range (in seconds) 
+                                    #   in the pktid by time index.
+maximum_time_index_range   36000    # maximum range (in seconds) 
+                                    #   in the pktid by time index.
+
+statistics_interval            # if specified, bytes and packets
+                               # read and written are printed 
+                               # at intervals specified here
+statistics_file logs/webdata_statistics # file in which to write transfer and connections info
+
+log_packets	&Arr{ # log all reaped packets sent to these ip addresses
+#127.0.0.1	      #  uncomment to get everything to localhost (for example)
+}
+
+reject_message	&Literal{
+You don't have permission to access this orbserver.
+Please contact someone@somedomain to gain access.
+}
+
+# following are descriptions of special dynamic controls available in orbserver
+dynamic_controls &Arr{
+percentage	&Literal{
+@range=(0:1) constant used in decaying average for 
+quantities calculated in performance thread 
+}
+maxlag		@range=(0:1) maximum lag value for all reaping clients
+delay		delay number (seconds) when lag is too high
+stalled		@range=(0:20) number of clients which appears stalled (not currently used)
+nreap		@range=(0:20) number of reaping clients
+catchup_rate	@range=(0:5) target ratio of reaping client packet rate to input packet rate for lagging client
+performance_calculation_period    @range=(0:30) how often statistics are calculated
+throttle	turn on/off throttling to slow writers and prevent readers from falling behind
+verbose_connections	show orbserver connections more verbosely
+}
+
+pf_revision_time 1398783901

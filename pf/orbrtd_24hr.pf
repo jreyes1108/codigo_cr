@@ -1,0 +1,28 @@
+#   orbrtd parameter file
+orbtag                  &ref(orbrtd.pf,orbtag)                  # default orbtag
+height                  &ref(orbrtd.pf,height)                  # default trace height
+scale                   &ref(orbrtd.pf,scale)                   # default scale
+trace_type              &ref(orbrtd.pf,trace_type)              # default trace_type
+foreground              &ref(orbrtd.pf,foreground)              # default trace foreground color
+foreground_both         &ref(orbrtd.pf,foreground_both)
+background              &ref(orbrtd.pf,background)              # default trace background color
+background_nodata       &ref(orbrtd.pf,background_nodata)       # default trace background color for no data
+#filter                  &ref(orbrtd.pf,filter)
+filter                  BW 0.005 4 0.1 4
+
+canvas_width            &ref(orbrtd.pf,canvas_width)            # total width of trace canvas
+canvas_twin             86400                                   # total time window of trace canvas
+canvas_hmax             &ref(orbrtd.pf,canvas_hmax)             # maximum height of displayed trace canvas
+canvas_wmax             &ref(orbrtd.pf,canvas_wmax)             # maximum width of displayed trace canvas
+update_interval         &ref(orbrtd.pf,update_interval)         # canvas auto time scrolling update interval
+future_buffer           &ref(orbrtd.pf,future_buffer)           # how much future time to display
+
+traces &Tbl{
+# nscl_expr     [orbtag  [height [scale    [trace_type [foreground [background [background_nodata [filter]]]]]]]]
+#   #.*BHZ.*             -        -       10000 
+     .*  -        -      -    -       -           -           -                  BW 0.005 4 0.2 4
+     #.*
+
+}
+
+pf_revision_time 1398787365
