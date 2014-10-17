@@ -21,6 +21,8 @@ usage = "Usage: %prog [options]"
 parser = OptionParser(usage=usage)
 parser.add_option("-p", "--pf", action="store",
         dest="pf", help="parametros", default='event2json.pf')
+parser.add_option("-m", "--min_mag", action="store",
+        dest="min_mag", help="Mininum Magnitude", default=False)
 parser.add_option("-t", "--time", action="store",
         dest="time", help="ventana de tiempo", default=False)
 parser.add_option("-v", "--verbose", action="store_true",
@@ -68,7 +70,6 @@ def get_mags(db, evid, orid):
 
     if temp.record_count < 1:
         return -1, '-', {}
-
     else:
         temp.sort('lddate')
         #temp.sort('uncertainty',reverse=True)
@@ -248,6 +249,14 @@ def buscar_eventos(database):
         'review','nass','ndef','auth')
 
         magnitude, magtype, allmags = get_mags(netmag,evid,orid)
+
+        if options.min_mag:
+            try:
+                if magnitude < float(options.min_mag):
+                    continue
+            except:
+                continue
+
 
         #db.record = record 
         #[time, lat, lon, depth, orid, evid, review, nass, ndef, magnitude, 
